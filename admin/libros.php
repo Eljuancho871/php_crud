@@ -12,27 +12,30 @@
     $txtImagen = (isset($_FILES["file"]["name"])) ? $_FILES["file"]["name"] : "none";
     $accion = (isset($_POST["accion"])) ? $_POST["accion"] : "none";
 
-    $host = "127.0.0.1";
-    $dbname = "ejercicios";
-    $password = "12345678";
-    $user = "root";
+    
+    function connection_query($sql){
+        
+        $host = "127.0.0.1";
+        $dbname = "ejercicio";
+        $password = "campus2023";
+        $user = "campus";
 
-    try{
-
-        $conexion = new mysqli($host, $user, $password, $dbname);
-        print_r($conexion);
-        echo "DB conectada...";
-    }
-    catch(mysqli_sql_exception $error){
-
-        echo "DB error... ";
-        print_r($error);
+        try{
+            $conexion = new mysqli($host, $user, $password, $dbname);
+            $conexion -> query($sql);
+            echo "DB conectada...";
+        }
+        catch(mysqli_sql_exception $error){
+    
+            echo "DB error... ";
+            print_r($error);
+        }
     }
 
     switch ($accion) {
         case 'agregar':
 
-
+            connection_query("INSERT INTO `usuarios` (`id`, `nombre`, `imagen`) VALUES (NULL, 'juan', 'imagen.php')");
             break;
         
             case "modificar":
@@ -52,15 +55,9 @@
 
     <center>
     <form method="POST" enctype="multipart/form-data" style="margin-right: 50px;">
-        
-        <div class="form-group">
-            <label for="exampleInputEmail1">ID</label>
-            <input type="email" class="form-control" name="txtID" id="exampleInputEmail1" placeholder="ID">
-        </div>
-
         <div class="form-group">
             <label for="exampleInputEmail1">Nombre</label>
-            <input type="email" class="form-control" name="txtNombre" id="exampleInputEmail1" placeholder="nombre">
+            <input type="text" class="form-control" name="txtNombre" id="exampleInputEmail1" placeholder="nombre">
         </div>
         <div class="form-group">
             <label for="exampleInputPassword1">Archivo</label>
