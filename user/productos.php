@@ -1,7 +1,14 @@
 <?php include "./template/cabecera.php";  ?>
 
 
+<div class="col-md-5">
+    Formulario agregar libros:
+</div>
+
 <div class="col-md-3">
+
+    Tabla de libros:
+
     <div class="card text-white bg-secondary" style="margin-top: 20px;">
     <img class="card-img-top" src="holder.js/100px180/" alt="Title">
     <div class="card-body">
