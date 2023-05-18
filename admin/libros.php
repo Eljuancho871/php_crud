@@ -14,15 +14,20 @@
     $txtImagen = (isset($_FILES["file"]["name"])) ? $_FILES["file"]["name"] : false;
     $accion = (isset($_POST["accion"])) ? $_POST["accion"] : false;
     $edit = false;
-    
+    $dir_images = "../user/images/";
+
     
     switch ($accion) {
         case 'agregar':
-            $conexion_instancia -> query_handle("INSERT INTO `libros` (`id`, `nombre`, `imagen`) VALUES (NULL, '$txtNombre', '$txtImagen')");
+            $dateUniq = new DateTime();
+            $dataArray = (array) $dateUniq;
+            $define_image = $dataArray["date"].$txtImagen;
+            move_uploaded_file($_FILES["file"]["tmp_name"], $dir_images.$define_image);
+            $conexion_instancia -> query_handle("INSERT INTO `libros` (`id`, `nombre`, `imagen`) VALUES (NULL, '$txtNombre', '$define_image')");
             break;
             
             case "modificar":
-                $txtImagenTmp = ($txtImagen) ? $txtImagen : $_POST["old_image"] ;
+                $txtImagenTmp = ($txtImagen) ? $txtImagen : $_POST["old_image"];
                 $conexion_instancia -> query_handle("UPDATE `libros` SET `nombre` = '$txtNombre', `imagen` = '$txtImagenTmp' WHERE id = '$txtId' ");
                 break;
 
@@ -98,7 +103,7 @@
             <tr>
                 <td><?php echo $el[0]; ?></td>
                 <td><?php echo $el[1]; ?></td>
-                <td><?php echo $el[2]; ?></td>
+                <td><img style="width: 150px" src="<?php "http://".$_SERVER["HTTP_HOST"] ?>/user/images/<?php echo $el[2]; ?>" /></td>
                 <td>
                     <form method="POST" style="display: flex;">
                         <input type="hidden" name="id_accion" value="<?php echo $el[0] ?>" />
