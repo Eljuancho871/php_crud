@@ -40,6 +40,13 @@ class handle_DB {
         return $data -> fetch_all();
     }
 
+    public function get_data_specific($element, $id){
+
+        $this -> connection_db();
+        $data = $this -> conexion -> query("SELECT $element FROM `libros` WHERE id = $id ");
+        return $data -> fetch_row();
+    }
+
 }
 
 

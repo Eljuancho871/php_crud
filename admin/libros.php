@@ -19,16 +19,28 @@
     
     switch ($accion) {
         case 'agregar':
-            $dateUniq = new DateTime();
-            $dataArray = (array) $dateUniq;
-            $define_image = $dataArray["date"].$txtImagen;
+            $num_random = rand();
+            $define_image = $num_random.$txtImagen;
             move_uploaded_file($_FILES["file"]["tmp_name"], $dir_images.$define_image);
             $conexion_instancia -> query_handle("INSERT INTO `libros` (`id`, `nombre`, `imagen`) VALUES (NULL, '$txtNombre', '$define_image')");
             break;
             
             case "modificar":
-                $txtImagenTmp = ($txtImagen) ? $txtImagen : $_POST["old_image"];
-                $conexion_instancia -> query_handle("UPDATE `libros` SET `nombre` = '$txtNombre', `imagen` = '$txtImagenTmp' WHERE id = '$txtId' ");
+
+                $num_random = rand();
+                $define_image = $num_random.$txtImagen; 
+
+                if($_FILES["file"]["name"]){
+                    
+                    unlink($dir_images.$_POST["old_image"]);
+                    move_uploaded_file($_FILES["file"]["tmp_name"], $dir_images.$define_image);
+                    $conexion_instancia -> query_handle("UPDATE `libros` SET `nombre` = '$txtNombre', `imagen` = '$define_image' WHERE id = '$txtId' ");
+                }else{
+
+                    $txtImagenTmp = ($txtImagen) ? $txtImagen : $_POST["old_image"];
+                    $conexion_instancia -> query_handle("UPDATE `libros` SET `nombre` = '$txtNombre', `imagen` = '$txtImagenTmp' WHERE id = '$txtId' ");
+                }
+
                 break;
 
             case "cancelar":
@@ -37,6 +49,8 @@
 
             case "eliminar":
                 $id = $_POST["id_accion"];
+                $name_image_delete = $conexion_instancia -> get_data_specific("imagen", $id);
+                unlink($dir_images.$name_image_delete[0]);
                 $conexion_instancia -> query_handle("DELETE FROM `libros` WHERE id = $id ");
                 break;
 
@@ -68,7 +82,11 @@
         <div class="form-group">
             <label for="exampleInputPassword1">Archivo</label>
             <br/>
-            <?php echo ($edit == false) ? "" : "Nombre Archivo: ".$edit[0][2]; ?>
+
+            <?php if($edit){ ?>
+                <img style="margin-bottom: 10px;" width="100" src=<?php echo "http://".$_SERVER["HTTP_HOST"]."/user/images/".$edit[0][2]; ?>  />
+            <?php } ?>
+
             <input type="hidden" value="<?php echo ($edit == false) ? "" : $edit[0][2]; ?>" name="old_image" />
             <input type="file" class="form-control" name="file" id="exampleInputPassword1">
         </div>
